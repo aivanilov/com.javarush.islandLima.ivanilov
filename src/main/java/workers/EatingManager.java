@@ -4,34 +4,29 @@ import exceptions.IslandGameException;
 import gamefield.GameField;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class EatingManager implements Runnable {
 
     private static final int availableProcessors = Runtime.getRuntime().availableProcessors();
     private final ExecutorService executorService;
-    private final GameField gameField;
+    private final Game game;
 
-    public EatingManager(GameField gameField) {
+    public EatingManager(Game game) {
         this.executorService = Executors.newFixedThreadPool(availableProcessors);
-        this.gameField = gameField;
+        this.game = game;
     }
 
     @Override
     public void run() {
-        LinkedList<Callable<Boolean>> listOfRows = new LinkedList<>();
-
-        for (int i = 0; i < gameField.getRealm().length; i++) {
-            EatingWorker eatingWorker = new EatingWorker(gameField.getRealm()[i]);
-            listOfRows.add(eatingWorker);
+        for (int i = 0; i < game.getGameField().getRows(); i++) {
+            EatingWorker eatingWorker = new EatingWorker(game.getGameField().getRealm()[i]);
+            executorService.submit(eatingWorker);
         }
-
-        try {
-            executorService.invokeAll(listOfRows);
-        } catch (InterruptedException e) {
-            throw new IslandGameException(e);
-        }
+        executorService.shutdown();
     }
 }

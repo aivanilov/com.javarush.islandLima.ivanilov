@@ -8,9 +8,8 @@ import utils.Dice;
 
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.concurrent.Callable;
 
-public class EatingWorker implements Callable<Boolean> {
+public class EatingWorker implements Runnable {
     private final Cell[] row;
 
     public EatingWorker(Cell[] row) {
@@ -18,10 +17,9 @@ public class EatingWorker implements Callable<Boolean> {
     }
 
     @Override
-    public Boolean call() {
+    public void run() {
         eatingPhase();
         clearDeadAnimals();
-        return true;
     }
 
     private void clearDeadAnimals() {

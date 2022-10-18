@@ -5,7 +5,6 @@ import builders.CellBuilder;
 import exceptions.IslandGameException;
 import lombok.Getter;
 
-import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -14,8 +13,8 @@ import java.util.concurrent.Future;
 public class GameField {
     private final Cell[][] realm;
     private final AnimalBuilder animalBuilder;
-    private int rows;
-    private int columns;
+    private final int rows;
+    private final int columns;
 
     public GameField(int rows, int columns){
         this.animalBuilder = new AnimalBuilder();

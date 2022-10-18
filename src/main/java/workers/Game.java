@@ -21,10 +21,12 @@ public class Game implements Runnable {
     private int columns;
     private final ExecutorService executorService;
     private AnimalBuilder animalBuilder;
+    private int iteration;
 
     public Game(int rows, int columns) {
         this.rows = rows;
         this.columns = columns;
+        iteration = 0;
         executorService = Executors.newFixedThreadPool(availableProcessors);
     }
 
@@ -38,11 +40,12 @@ public class Game implements Runnable {
         gameField = new GameField(rows, columns);
     }
 
-    public Optional<GameInfo> doIteration() { //TODO Implement checking of stop criteria
+    public Optional<GameInfo> doIteration() { //TODO Implement stop criteria
         if (!isStopped) {
-            EatingManager eatingManager = new EatingManager(gameField);
+            iteration++;
+            EatingManager eatingManager = new EatingManager(this);
             runAndJoin(eatingManager);
-            CalcManager calcManager = new CalcManager(gameField);
+            CalcManager calcManager = new CalcManager(this);
             runAndJoin(calcManager);
             return Optional.of(new GameInfo(calcManager.getStats(), gameField));
         }
@@ -50,10 +53,10 @@ public class Game implements Runnable {
     }
 
     private void runAndJoin(Runnable runnable) {
-        Thread eating = new Thread(runnable);
-        eating.start();
+        Thread thread = new Thread(runnable);
+        thread.start();
         try{
-            eating.join();
+            thread.join();
         } catch (InterruptedException e) {
             throw new IslandGameException(e);
         }

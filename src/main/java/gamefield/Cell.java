@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,14 +27,5 @@ public class Cell {
         this.territory = territory;
         this.animals = animals;
         this.plants = plants;
-    }
-
-    public void identifySurroundings(){
-        Map<Direction, Cell> surroundings = new HashMap<>();
-        findNorth();
-        this.surroundings = surroundings;
-    }
-
-    private void findNorth() {
     }
 }

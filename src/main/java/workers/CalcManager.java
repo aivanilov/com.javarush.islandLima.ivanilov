@@ -11,10 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.*;
 
 @Getter
 @Setter
@@ -23,11 +20,13 @@ public class CalcManager implements Runnable {
     private static final int availableProcessors = Runtime.getRuntime().availableProcessors();
     private final ExecutorService executorService;
     private final GameField gameField;
+    private final Game game;
     private Stats stats;
 
-    public CalcManager(GameField gameField) {
+    public CalcManager(Game game) {
+        this.game = game;
+        this.gameField = game.getGameField();
         this.executorService = Executors.newFixedThreadPool(availableProcessors);
-        this.gameField = gameField;
     }
 
     @Override
@@ -40,7 +39,7 @@ public class CalcManager implements Runnable {
             callables.add(calcByRowWorker);
         }
 
-        List<FutureTask<Map<Type, Long>>>  workers = runCalculations(callables);
+        List<Future<Map<Type, Long>>>  workers = runCalculations(callables);
 
         try{
             for (var future: workers) {
@@ -62,23 +61,23 @@ public class CalcManager implements Runnable {
         } catch (Exception e) {
             throw new IslandGameException(e.getCause());
         }
-        stats = new Stats(gameField, numberOfCreatures);
-        Stats.numberOfIterations.getAndIncrement();
+        stats = new Stats(gameField, numberOfCreatures, game.getIteration());
+        executorService.shutdown();
     }
 
-    private List<FutureTask<Map<Type, Long>>> runCalculations(List<? extends Callable<Map<Type, Long>>>  workers) {
-        List<FutureTask<Map<Type, Long>>> futureTasks = new LinkedList<>();
+    private List<Future<Map<Type, Long>>> runCalculations(List<? extends Callable<Map<Type, Long>>>  workers) {
+        List<Callable<Map<Type, Long>>> futureTasks = new LinkedList<>();
 
         for (int i = 0; i < gameField.getRows(); i++) {
             CaclWorker caclWorker = new CaclWorker(gameField.getRealm()[i]);
-            FutureTask<Map<Type, Long>> task = new FutureTask<>(caclWorker);
-            futureTasks.add(task);
+            futureTasks.add(caclWorker);
         }
 
-        for (var task: futureTasks) {
-            executorService.submit(task);
+        try{
+            return executorService.invokeAll(futureTasks);
+        } catch (InterruptedException e) {
+            throw new IslandGameException(e);
         }
 
-        return futureTasks;
     }
 }

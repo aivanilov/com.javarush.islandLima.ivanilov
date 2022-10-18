@@ -8,25 +8,25 @@ import lombok.Setter;
 
 import java.lang.reflect.Type;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
 @Setter
 public class Stats {
-    public static AtomicInteger numberOfIterations = new AtomicInteger(0);
+    private int iteration = 0;
     private GameField gameField;
     private Map<Type, Long> numberOfCreatures;
 
-    public Stats(GameField gameField, Map<Type, Long> numberOfCreatures) {
+    public Stats(GameField gameField, Map<Type, Long> numberOfCreatures, int iteration) {
         this.gameField = gameField;
         this.numberOfCreatures = numberOfCreatures;
+        this.iteration = iteration;
     }
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Week #")
-                .append(numberOfIterations)
+                .append(iteration)
                 .append(", ")
                 .append("population {");
         Map<Type, Object> prototypes = gameField.getAnimalBuilder().getPrototypes();
