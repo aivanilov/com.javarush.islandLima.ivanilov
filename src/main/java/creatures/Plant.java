@@ -17,6 +17,5 @@ public class Plant extends Creature {
 
     @Override
     public void reproduce() {
-        //TODO implement reproduce()
     }
 }

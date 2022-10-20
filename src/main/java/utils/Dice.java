@@ -18,6 +18,12 @@ public class Dice {
     }
 
     public static <E> E getRandomSetElement(Set<E> set) {
-        return set.stream().skip(new Random().nextInt(set.size())).findFirst().orElse(null);
+        int key = set.size();
+
+        if (key == 0) {
+            return null;
+        }
+
+        return set.stream().skip(new Random().nextInt(key)).findFirst().orElse(null);
     }
 }

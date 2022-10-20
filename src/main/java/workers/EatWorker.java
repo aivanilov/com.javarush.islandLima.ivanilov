@@ -9,17 +9,16 @@ import utils.Dice;
 import java.lang.reflect.Type;
 import java.util.*;
 
-public class EatingWorker implements Runnable {
+public class EatWorker implements Runnable {
     private final Cell[] row;
 
-    public EatingWorker(Cell[] row) {
+    public EatWorker(Cell[] row) {
         this.row = row;
     }
 
     @Override
     public void run() {
         eatingPhase();
-        clearDeadAnimals();
     }
 
     private void clearDeadAnimals() {
@@ -38,6 +37,8 @@ public class EatingWorker implements Runnable {
             for (var entry : animals.entrySet()) {
                 Set<Animal> animalSet = entry.getValue();
                 for (var animal : animalSet) {
+                    animal.starve();
+
                     if (animal.getWeight() == animal.getAnimalLimits().getMaxWeight())
                         continue;
 
@@ -52,6 +53,7 @@ public class EatingWorker implements Runnable {
                 }
             }
         }
+        clearDeadAnimals();
     }
 
     private Creature peekTarget(Cell cell, Animal animal) {

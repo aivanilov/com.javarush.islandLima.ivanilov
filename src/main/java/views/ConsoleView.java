@@ -7,8 +7,6 @@ import lombok.Getter;
 import utils.Sleeper;
 import workers.Game;
 
-import java.util.Optional;
-
 
 @AllArgsConstructor
 @Getter
@@ -19,7 +17,7 @@ public class ConsoleView implements View {
     public void runGame() {
         game.initialize();
         while (!game.isStopped()) {
-            Optional<GameInfo> gameInfo = game.doIteration();
+            GameInfo gameInfo = game.doIteration();
             printSummary(gameInfo);
             printField(game.getGameField());
             Sleeper.sleep(500);
@@ -27,10 +25,14 @@ public class ConsoleView implements View {
     }
 
     private void printField(GameField gameField) {
-        System.out.println(gameField);
+        System.out.println(gameField.printField());
     }
 
-    private void printSummary(Optional<GameInfo> gameInfo) {
-        System.out.println(gameInfo.get().getStats());
+    private void printSummary(GameInfo gameInfo) {
+        if (gameInfo == null) {
+            System.out.println("No game stats available"); //TODO extract variable
+        } else {
+            System.out.println(gameInfo.getStats());
+        }
     }
 }

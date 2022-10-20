@@ -6,8 +6,6 @@ import exceptions.IslandGameException;
 import gamefield.GameField;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Optional;
 import java.util.concurrent.*;
 
 @Getter
@@ -40,16 +38,22 @@ public class Game implements Runnable {
         gameField = new GameField(rows, columns);
     }
 
-    public Optional<GameInfo> doIteration() { //TODO Implement stop criteria
-        if (!isStopped) {
-            iteration++;
-            EatingManager eatingManager = new EatingManager(this);
-            runAndJoin(eatingManager);
-            CalcManager calcManager = new CalcManager(this);
-            runAndJoin(calcManager);
-            return Optional.of(new GameInfo(calcManager.getStats(), gameField));
+    public GameInfo doIteration() { //TODO Implement stop criteria
+        try {
+            if (!isStopped) {
+                iteration++;
+                EatManager eatManager = new EatManager(this);
+                runAndJoin(eatManager);
+                //TODO reproduce manager and reproduce worker
+                //TODO MoveManager and MoveWorker
+                CalcManager calcManager = new CalcManager(this);
+                runAndJoin(calcManager);
+                return new GameInfo(calcManager.getStats(), gameField);
+            }
+        } catch (Exception e) {
+            throw new IslandGameException(e);
         }
-        return Optional.empty();
+        return null;
     }
 
     private void runAndJoin(Runnable runnable) {

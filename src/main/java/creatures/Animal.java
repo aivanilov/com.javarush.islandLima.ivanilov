@@ -120,4 +120,10 @@ public abstract class Animal extends Creature
             }
         }
     }
+
+    public void starve() {
+        double weight = this.getWeight();
+        double starvingTempo = this.getAnimalLimits().getStarvingTempo();
+        this.setWeight(weight - starvingTempo);
+    }
 }
