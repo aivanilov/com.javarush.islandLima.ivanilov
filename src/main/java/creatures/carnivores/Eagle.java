@@ -19,6 +19,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @Getter
 @Setter
 @Nesting
+@SuppressWarnings("unused")
 public class Eagle extends Carnivore {
 
     public Eagle() {

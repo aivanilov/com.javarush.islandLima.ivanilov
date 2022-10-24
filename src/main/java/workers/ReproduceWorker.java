@@ -90,7 +90,7 @@ public class ReproduceWorker implements Runnable {
 
         if (plants.getMass() == 0) {
             double chanceOfNewPopulation = Dice.random();
-            if (chanceOfNewPopulation > Settings.MIN_CHANCE_OF_NEW_POPULATION) {
+            if (chanceOfNewPopulation > Settings.settings.MIN_CHANCE_OF_NEW_POPULATION) {
                 int newPopulationLimit = Plant.maxMassInCell / 100;
                 plants.setMass(Dice.random(0, newPopulationLimit));
             }

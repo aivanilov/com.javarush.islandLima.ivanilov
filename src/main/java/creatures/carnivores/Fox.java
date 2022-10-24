@@ -18,6 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @AnimalScanner
 @Getter
 @Setter
+@SuppressWarnings("unused")
 public class Fox extends Carnivore {
 
     public Fox() {

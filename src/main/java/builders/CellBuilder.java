@@ -51,7 +51,7 @@ public class CellBuilder implements Callable<Cell> {
         Set<Animal> result = new HashSet<>();
         Animal animal = (Animal) prototypes.get(animalClass);
         double probabilityOfAnimalSpawn = Dice.random(0, 1.0);
-        boolean isSpawned = probabilityOfAnimalSpawn > Settings.MIN_CHANCE_OF_SPAWN;
+        boolean isSpawned = probabilityOfAnimalSpawn > Settings.settings.MIN_CHANCE_OF_SPAWN;
         if (isSpawned) {
             int animalAmount = Dice.random(0, animal.getAnimalLimits().getMaxPopulationInCell());
             for (int i = 0; i < animalAmount; i++) {

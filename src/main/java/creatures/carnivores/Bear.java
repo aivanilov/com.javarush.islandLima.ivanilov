@@ -19,6 +19,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @Getter
 @Setter
 @EatingCarrion
+@SuppressWarnings("unused")
 public class Bear extends Carnivore {
 
     public Bear() {

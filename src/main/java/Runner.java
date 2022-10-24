@@ -1,3 +1,4 @@
+
 import game.Settings;
 import views.ConsoleView;
 import workers.Game;
@@ -5,7 +6,9 @@ import workers.Game;
 public class  Runner {
 
     public static void main(String[] args) {
-        Game game = new Game(Settings.ROWS, Settings.COLUMNS);
+        Settings settings = new Settings();
+        settings.parseSettings();
+        Game game = new Game(Settings.settings.ROWS, Settings.settings.COLUMNS);
         ConsoleView consoleView = new ConsoleView(game);
         consoleView.runGame();
     }

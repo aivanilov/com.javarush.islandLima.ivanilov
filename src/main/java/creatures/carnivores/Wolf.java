@@ -17,6 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @Getter
 @Setter
 @EatingCarrion
+@SuppressWarnings("unused")
 public class Wolf extends Carnivore {
 
     public Wolf() {

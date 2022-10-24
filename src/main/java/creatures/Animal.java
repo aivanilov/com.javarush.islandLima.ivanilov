@@ -124,7 +124,7 @@ public abstract class Animal extends Creature
 
         if (targetWeight > amountOfFoodNeeded) {
             this.setWeight(weight + amountOfFoodNeeded);
-            newCarrion += (targetWeight - amountOfFoodNeeded) / Settings.CARRION_DIVIDER;
+            newCarrion += (targetWeight - amountOfFoodNeeded) / Settings.settings.CARRION_DIVIDER;
             animal.setWeight(0);
         } else {
             if (targetWeight > 0) {

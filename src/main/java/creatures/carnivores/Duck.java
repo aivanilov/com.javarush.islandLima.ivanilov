@@ -20,6 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @Getter
 @Setter
 @Nesting
+@SuppressWarnings("unused")
 public class Duck extends Carnivore {
 
     public Duck() {

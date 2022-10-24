@@ -11,6 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @AnimalScanner
 @Getter
 @Setter
+@SuppressWarnings("unused")
 public class Caterpillar extends Herbivore {
 
     public Caterpillar() {
