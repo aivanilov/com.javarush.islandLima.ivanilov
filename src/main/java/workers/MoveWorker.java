@@ -4,7 +4,6 @@ import behaviours.Nesting;
 import entities.Direction;
 import game.Cell;
 import utils.Dice;
-import utils.Threader;
 import utils.Waiter;
 
 import java.util.concurrent.ExecutorService;

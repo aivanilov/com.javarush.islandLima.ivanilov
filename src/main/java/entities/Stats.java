@@ -12,7 +12,7 @@ import java.util.Map;
 @Getter
 @Setter
 public class Stats {
-    private int iteration = 0;
+    private int iteration;
     private GameField gameField;
     private Map<Type, Long> numberOfCreatures;
 

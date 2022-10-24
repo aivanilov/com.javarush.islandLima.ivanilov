@@ -8,6 +8,7 @@ import entities.BreedingParams;
 import entities.Terrain;
 import exceptions.IslandGameException;
 import game.Cell;
+import game.Settings;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +27,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @EqualsAndHashCode(callSuper = false)
 public abstract class Animal extends Creature
         implements Eating, Movable, Cloneable {
+    public static final double MIN_CHANCE_TO_BORN_FEMALE = 0.5;
     private String name;
     private double weight;
     protected boolean isFemale;
@@ -36,6 +38,7 @@ public abstract class Animal extends Creature
     private Map<Type, Integer> foodPreferences;
     protected Set<Terrain> terrains = new HashSet<>();
     private ReentrantLock lock = new ReentrantLock();
+    private int carrionDivider;
 
     @Override
     public void reproduce(Creature creature) {
@@ -84,7 +87,7 @@ public abstract class Animal extends Creature
             double amountOfFoodNeeded = animal.getAnimalLimits().getAmountOfFoodNeeded();
             animal.setWeight(minWeight + Dice.random((amountOfFoodNeeded / 2), amountOfFoodNeeded));
             double genderChance = Dice.random(0.0, 1.0);
-            animal.setFemale(genderChance > 0.5);
+            animal.setFemale(genderChance > MIN_CHANCE_TO_BORN_FEMALE);
             animal.setPregnant(false);
             animal.setPregnancyCounter(new AtomicInteger(0));
             return animal;
@@ -121,7 +124,7 @@ public abstract class Animal extends Creature
 
         if (targetWeight > amountOfFoodNeeded) {
             this.setWeight(weight + amountOfFoodNeeded);
-            newCarrion += (targetWeight - amountOfFoodNeeded) / 5; //TODO extract variable
+            newCarrion += (targetWeight - amountOfFoodNeeded) / Settings.CARRION_DIVIDER;
             animal.setWeight(0);
         } else {
             if (targetWeight > 0) {

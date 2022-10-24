@@ -12,6 +12,12 @@ import workers.Game;
 @AllArgsConstructor
 @Getter
 public class ConsoleView implements View {
+    public static final String LEGEND = "Legend for each cell: the most popular creature \\ plants. Sign \"-\" means no creatures left in the cell \n" +
+            "More details are provided for a field with 10 or less columns.";
+    public static final String GAME_OVER = "All animals are dead. \n" +
+            "Game over.";
+    public static final String NO_GAME_STATS = "No game stats available";
+
     Game game;
 
     @Override
@@ -27,14 +33,12 @@ public class ConsoleView implements View {
         while (!game.isStopped()) {
             GameInfo gameInfo = game.doIteration();
             printSummary(gameInfo);
-            System.out.println("Legend for each cell: the most popular creature \\ plants. Sign \"-\" means no creatures left in the cell \n" +
-                                "More details are provided for a field with 10 or less columns."); //TODO extract variable
+            System.out.println(LEGEND);
             printField(game.getGameField());
             System.out.println();
             Sleeper.sleep();
         }
-        System.out.println("All animals are dead. \n" +
-                            "Game over.");
+        System.out.println(GAME_OVER);
     }
 
     private void printField(GameField gameField) {
@@ -43,7 +47,7 @@ public class ConsoleView implements View {
 
     private void printSummary(GameInfo gameInfo) {
         if (gameInfo == null) {
-            System.out.println("No game stats available"); //TODO extract variable
+            throw new IslandGameException(NO_GAME_STATS);
         } else {
             System.out.println(gameInfo.getStats());
         }

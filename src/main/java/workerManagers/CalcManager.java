@@ -6,7 +6,7 @@ import workers.Game;
 import lombok.Getter;
 import lombok.Setter;
 import utils.Waiter;
-import workers.CaclWorker;
+import workers.CalcWorker;
 
 import java.lang.reflect.Type;
 import java.util.*;
@@ -36,7 +36,7 @@ public class CalcManager extends Manager implements Callable<Stats> {
 
         Arrays.stream(gameField.getRealm())
                 .forEach(cells -> Arrays.stream(cells)
-                        .forEach(cell -> callables.add(new CaclWorker(cell))));
+                        .forEach(cell -> callables.add(new CalcWorker(cell))));
 
         List<Future<Map<Type, Long>>> workers = generateFutures(callables);
         executorService.shutdown();

@@ -6,7 +6,6 @@ import creatures.herbivores.*;
 import entities.AnimalLimits;
 import entities.BreedingParams;
 import entities.Terrain;
-import game.Cell;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,8 +20,6 @@ import java.util.concurrent.ThreadLocalRandom;
 @Setter
 @EatingCarrion
 public class Bear extends Carnivore {
-
-    //TODO import params
 
     public Bear() {
         super();

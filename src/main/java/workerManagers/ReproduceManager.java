@@ -9,7 +9,6 @@ import java.util.concurrent.Executors;
 
 public class ReproduceManager extends Manager {
 
-
     public ReproduceManager(Game game) {
         this.executorService = Executors.newFixedThreadPool(availableProcessors);
         this.gameField = game.getGameField();

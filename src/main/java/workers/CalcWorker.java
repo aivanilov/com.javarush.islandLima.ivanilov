@@ -9,11 +9,11 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 
 
-public class CaclWorker implements Callable<Map<Type, Long>> {
+public class CalcWorker implements Callable<Map<Type, Long>> {
 
     private final Cell cell;
 
-    public CaclWorker(Cell cell) {
+    public CalcWorker(Cell cell) {
         this.cell = cell;
     }
 

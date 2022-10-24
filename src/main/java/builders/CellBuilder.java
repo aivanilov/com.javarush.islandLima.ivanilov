@@ -6,6 +6,7 @@ import entities.Terrain;
 import exceptions.IslandGameException;
 import game.Cell;
 import game.GameField;
+import game.Settings;
 import utils.Dice;
 
 import java.lang.reflect.Type;
@@ -14,8 +15,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 public class CellBuilder implements Callable<Cell> {
     private final GameField gameField;
@@ -51,8 +50,8 @@ public class CellBuilder implements Callable<Cell> {
     private Set<Animal> generateAnimals(Class<? extends Animal> animalClass, Map<Type, Object> prototypes) {
         Set<Animal> result = new HashSet<>();
         Animal animal = (Animal) prototypes.get(animalClass);
-        double probabilityOfAnimalSpawn = Dice.random(0, 1.0); //TODO extract constant
-        boolean isSpawned = probabilityOfAnimalSpawn > 0.25; //TODO extract constant
+        double probabilityOfAnimalSpawn = Dice.random(0, 1.0);
+        boolean isSpawned = probabilityOfAnimalSpawn > Settings.MIN_CHANCE_OF_SPAWN;
         if (isSpawned) {
             int animalAmount = Dice.random(0, animal.getAnimalLimits().getMaxPopulationInCell());
             for (int i = 0; i < animalAmount; i++) {

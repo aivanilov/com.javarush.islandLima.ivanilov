@@ -4,6 +4,7 @@ import entities.GameInfo;
 import entities.Stats;
 import exceptions.IslandGameException;
 import game.GameField;
+import game.Settings;
 import lombok.Getter;
 import lombok.Setter;
 import utils.Waiter;
@@ -17,6 +18,7 @@ import java.util.concurrent.*;
 @Setter
 public class Game implements Runnable {
     private static final int availableProcessors = Runtime.getRuntime().availableProcessors();
+    public static final String GAME_NOT_INITIALIZED = "The game hasn't been initialized yet.";
 
     private volatile GameField gameField;
     private boolean isStopped;
@@ -61,7 +63,7 @@ public class Game implements Runnable {
                 throw new IslandGameException(e);
             }
         }
-        throw new IslandGameException("The game hasn't been initialized yet.");
+        throw new IslandGameException(GAME_NOT_INITIALIZED);
     }
 
     private boolean checkStopCriteria(GameInfo gameInfo) {

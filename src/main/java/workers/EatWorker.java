@@ -5,6 +5,7 @@ import creatures.Animal;
 import creatures.Creature;
 import creatures.Plant;
 import game.Cell;
+import game.Settings;
 import utils.Dice;
 
 import java.lang.reflect.Type;
@@ -68,7 +69,7 @@ public class EatWorker implements Runnable {
 
     private void decreaseCarrion() {
         double carrion = this.cell.getCarrion();
-        cell.setCarrion(carrion / 3); //TODO Extract variable
+        cell.setCarrion(carrion / Settings.CARRION_DECREASE_AT_THE_END_OF_ITERATION_MULTIPLIER);
         cell.setCarrion(0);
     }
 

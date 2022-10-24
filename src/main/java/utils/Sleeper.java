@@ -1,12 +1,13 @@
 package utils;
 
 import exceptions.IslandGameException;
+import game.Settings;
 
 public class Sleeper {
 
     public static void sleep() {
         try{
-            Thread.sleep(100);
+            Thread.sleep(Settings.ITERATION_SPEED_IN_MILLIS);
         } catch (Exception e) {
             throw new IslandGameException("Thread has been interrupted");
         }

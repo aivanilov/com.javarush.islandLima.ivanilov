@@ -3,12 +3,12 @@ package workers;
 import creatures.Animal;
 import creatures.Plant;
 import game.Cell;
+import game.Settings;
 import utils.Dice;
 
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class ReproduceWorker implements Runnable {
@@ -89,10 +89,10 @@ public class ReproduceWorker implements Runnable {
         Plant plants = cell.getPlants();
 
         if (plants.getMass() == 0) {
-            double chanceOfRepopulation = Dice.random();
-            if (chanceOfRepopulation > 0.95) {
-                int repopulationLimit = Plant.maxMassInCell / 100;
-                plants.setMass(Dice.random(0, repopulationLimit));
+            double chanceOfNewPopulation = Dice.random();
+            if (chanceOfNewPopulation > Settings.MIN_CHANCE_OF_NEW_POPULATION) {
+                int newPopulationLimit = Plant.maxMassInCell / 100;
+                plants.setMass(Dice.random(0, newPopulationLimit));
             }
             return;
         }

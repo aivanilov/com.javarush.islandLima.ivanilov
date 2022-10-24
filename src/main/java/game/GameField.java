@@ -26,15 +26,15 @@ public class GameField {
         this.columns = columns;
     }
 
-    public Cell[][] generateGameField(int rows, int colums) {
-        if (rows <= 0 || colums <= 0)
+    public Cell[][] generateGameField(int rows, int columns) {
+        if (rows <= 0 || columns <= 0)
             throw new IslandGameException("Game field has no rows or columns");
 
-        Cell[][] realm = new Cell[rows][colums];
+        Cell[][] realm = new Cell[rows][columns];
         ExecutorService executor = Executors.newFixedThreadPool(availableProcessors);
         CellBuilder cellBuilder = new CellBuilder(this, this.animalBuilder);
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < colums; j++) {
+            for (int j = 0; j < columns; j++) {
                 try {
                     Future<Cell> cell = executor.submit(cellBuilder);
                     realm[i][j] = cell.get();
