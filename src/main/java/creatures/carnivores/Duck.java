@@ -1,15 +1,17 @@
 package creatures.carnivores;
 
-import actions.Nesting;
-import annotations.AnimalScanner;
+import behaviours.Nesting;
+import builders.AnimalScanner;
 import creatures.Plant;
 import creatures.herbivores.Caterpillar;
 import entities.AnimalLimits;
-import entities.BreedingParameters;
+import entities.BreedingParams;
+import entities.Terrain;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -17,7 +19,8 @@ import java.util.concurrent.ThreadLocalRandom;
 @AnimalScanner
 @Getter
 @Setter
-public class Duck extends Carnivore implements Nesting {
+@Nesting
+public class Duck extends Carnivore {
 
     public Duck() {
         super();
@@ -34,17 +37,17 @@ public class Duck extends Carnivore implements Nesting {
                 0.15);
         setWeight(ThreadLocalRandom.current().nextDouble(animalLimits.getMinWeight(), animalLimits.getMaxWeight()));
         setAnimalLimits(animalLimits);
-        BreedingParameters breedingParameters = new BreedingParameters(
-                determineGender(),
-                false,
-                0,
+        BreedingParams breedingParams = new BreedingParams(
                 4,
                 5,
                 15);
-        setBreedingParameters(breedingParameters);
+        setBreedingParams(breedingParams);
         Map<Type, Integer> foodPreferences = new HashMap<>();
         foodPreferences.put(Caterpillar.class, 90);
         foodPreferences.put(Plant.class, 100);
         setFoodPreferences(foodPreferences);
+
+        terrains.addAll(Arrays.asList(Terrain.values()));
+        getTerrains().remove(Terrain.MOUNTAINS);
     }
 }

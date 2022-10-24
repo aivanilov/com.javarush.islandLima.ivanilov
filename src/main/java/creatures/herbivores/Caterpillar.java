@@ -1,15 +1,11 @@
 package creatures.herbivores;
 
-import annotations.AnimalScanner;
-import creatures.Plant;
+import builders.AnimalScanner;
 import entities.AnimalLimits;
-import entities.BreedingParameters;
+import entities.BreedingParams;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 @AnimalScanner
@@ -32,13 +28,10 @@ public class Caterpillar extends Herbivore {
                 0.025);
         setWeight(ThreadLocalRandom.current().nextDouble(animalLimits.getMinWeight(), animalLimits.getMaxWeight()));
         setAnimalLimits(animalLimits);
-        BreedingParameters breedingParameters = new BreedingParameters(
-                determineGender(),
-                false,
-                0,
+        BreedingParams breedingParams = new BreedingParams(
                 2,
                 25,
                 150);
-        setBreedingParameters(breedingParameters);
+        setBreedingParams(breedingParams);
     }
 }

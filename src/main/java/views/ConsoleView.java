@@ -1,7 +1,8 @@
 package views;
 
 import entities.GameInfo;
-import gamefield.GameField;
+import exceptions.IslandGameException;
+import game.GameField;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import utils.Sleeper;
@@ -15,13 +16,25 @@ public class ConsoleView implements View {
 
     @Override
     public void runGame() {
-        game.initialize();
+        Thread thread = new Thread(game);
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            throw new IslandGameException(e);
+        }
+
         while (!game.isStopped()) {
             GameInfo gameInfo = game.doIteration();
             printSummary(gameInfo);
+            System.out.println("Legend for each cell: the most popular creature \\ plants. Sign \"-\" means no creatures left in the cell \n" +
+                                "More details are provided for a field with 10 or less columns."); //TODO extract variable
             printField(game.getGameField());
-            Sleeper.sleep(500);
+            System.out.println();
+            Sleeper.sleep();
         }
+        System.out.println("All animals are dead. \n" +
+                            "Game over.");
     }
 
     private void printField(GameField gameField) {

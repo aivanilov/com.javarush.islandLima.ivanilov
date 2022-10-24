@@ -1,13 +1,17 @@
 package creatures.carnivores;
 
-import annotations.AnimalScanner;
+import behaviours.EatingCarrion;
+import builders.AnimalScanner;
 import creatures.herbivores.*;
 import entities.AnimalLimits;
-import entities.BreedingParameters;
+import entities.BreedingParams;
+import entities.Terrain;
+import game.Cell;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -15,6 +19,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @AnimalScanner
 @Getter
 @Setter
+@EatingCarrion
 public class Bear extends Carnivore {
 
     //TODO import params
@@ -25,23 +30,20 @@ public class Bear extends Carnivore {
         setName("Медведь");
         setIcon("\uD83D\uDC3B");
         AnimalLimits animalLimits = new AnimalLimits(
-                2,
+                3,
                 420,
                 500,
                 5,
                 2,
                 80,
-                20);
+                10);
         setWeight(ThreadLocalRandom.current().nextDouble(animalLimits.getMinWeight(), animalLimits.getMaxWeight()));
         setAnimalLimits(animalLimits);
-        BreedingParameters breedingParameters = new BreedingParameters(
-                        determineGender(),
-                        false,
-                        0,
+        BreedingParams breedingParams = new BreedingParams(
                         28,
-                        1,
-                        3);
-        setBreedingParameters(breedingParameters);
+                        2,
+                        5);
+        setBreedingParams(breedingParams);
         Map<Type, Integer> foodPreferences = new HashMap<>();
         foodPreferences.put(Boa.class, 80);
         foodPreferences.put(Horse.class, 40);
@@ -54,5 +56,7 @@ public class Bear extends Carnivore {
         foodPreferences.put(Buffalo.class, 20);
         foodPreferences.put(Duck.class, 10);
         setFoodPreferences(foodPreferences);
+
+        terrains.addAll(Arrays.asList(Terrain.values()));
     }
 }

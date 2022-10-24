@@ -6,7 +6,7 @@ public class Sleeper {
 
     public static void sleep() {
         try{
-            Thread.sleep(1000);
+            Thread.sleep(100);
         } catch (Exception e) {
             throw new IslandGameException("Thread has been interrupted");
         }

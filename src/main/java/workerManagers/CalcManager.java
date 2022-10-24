@@ -1,28 +1,23 @@
-package workers;
+package workerManagers;
 
 import entities.Stats;
 import exceptions.IslandGameException;
-import gamefield.GameField;
+import workers.Game;
 import lombok.Getter;
 import lombok.Setter;
+import utils.Waiter;
+import workers.CaclWorker;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 
 @Getter
 @Setter
-public class CalcManager implements Runnable {
+public class CalcManager extends Manager implements Callable<Stats> {
 
-    private static final int availableProcessors = Runtime.getRuntime().availableProcessors();
-    private final ExecutorService executorService;
-    private final GameField gameField;
     private final Game game;
     private Stats stats;
-
     public CalcManager(Game game) {
         this.game = game;
         this.gameField = game.getGameField();
@@ -31,20 +26,25 @@ public class CalcManager implements Runnable {
 
     @Override
     public void run() {
+        stats = call();
+    }
+
+    @Override
+    public Stats call() {
         Map<Type, Long> numberOfCreatures = new HashMap<>();
         List<Callable<Map<Type, Long>>> callables = new LinkedList<>();
 
-        for (int i = 0; i < gameField.getRows(); i++) {
-            Callable<Map<Type, Long>> calcByRowWorker = new CaclWorker(gameField.getRealm()[i]);
-            callables.add(calcByRowWorker);
-        }
+        Arrays.stream(gameField.getRealm())
+                .forEach(cells -> Arrays.stream(cells)
+                        .forEach(cell -> callables.add(new CaclWorker(cell))));
 
-        List<Future<Map<Type, Long>>>  workers = runCalculations(callables);
+        List<Future<Map<Type, Long>>> workers = generateFutures(callables);
+        executorService.shutdown();
 
         try{
             for (var future: workers) {
-                Map<Type, Long> creaturesInRow = future.get();
-                for (var entry: creaturesInRow.entrySet()) {
+                Map<Type, Long> creaturesInCell = future.get();
+                for (var entry: creaturesInCell.entrySet()) {
                     Type type = entry.getKey();
                     Long quantity = entry.getValue();
 
@@ -61,23 +61,16 @@ public class CalcManager implements Runnable {
         } catch (Exception e) {
             throw new IslandGameException(e.getCause());
         }
-        stats = new Stats(gameField, numberOfCreatures, game.getIteration());
         executorService.shutdown();
+        Waiter.awaitTermination(executorService);
+        return new Stats(gameField, numberOfCreatures, game.getIteration());
     }
 
-    private List<Future<Map<Type, Long>>> runCalculations(List<? extends Callable<Map<Type, Long>>>  workers) {
-        List<Callable<Map<Type, Long>>> futureTasks = new LinkedList<>();
-
-        for (int i = 0; i < gameField.getRows(); i++) {
-            CaclWorker caclWorker = new CaclWorker(gameField.getRealm()[i]);
-            futureTasks.add(caclWorker);
-        }
-
-        try{
-            return executorService.invokeAll(futureTasks);
+    private List<Future<Map<Type, Long>>> generateFutures(List<Callable<Map<Type, Long>>> callables) {
+        try {
+            return executorService.invokeAll(callables);
         } catch (InterruptedException e) {
             throw new IslandGameException(e);
         }
-
     }
 }

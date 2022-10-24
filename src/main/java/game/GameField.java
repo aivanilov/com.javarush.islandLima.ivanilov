@@ -1,16 +1,12 @@
-package gamefield;
+package game;
 
 import builders.AnimalBuilder;
 import builders.CellBuilder;
 import creatures.Animal;
-import de.vandermeer.asciitable.AsciiTable;
-import de.vandermeer.skb.interfaces.document.TableRowStyle;
-import de.vandermeer.skb.interfaces.document.TableRowType;
-import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
 import exceptions.IslandGameException;
+import io.bretty.console.table.Alignment;
+import io.bretty.console.table.Table;
 import lombok.Getter;
-
-import javax.swing.text.TableView;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.*;
@@ -54,15 +50,14 @@ public class GameField {
     }
 
     public String printField() {
-        return renderTable(realm, columns);
+        return renderTable(realm);
     }
 
-    private String renderTable(Cell[][] realm, int columns) {
+    private String renderTable(Cell[][] realm) {
         if (columns > 0 && columns <= 20) {
-            AsciiTable field = new AsciiTable();
-            for (int i = 0; i < rows; i++) {
-                LinkedList<String> creaturesToPrint = new LinkedList<>();
+            String[][] strings = new String[rows][columns];
 
+            for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < columns; j++) {
                     Cell cell = realm[i][j];
                     Map.Entry<Type, Set<Animal>> animalEntry = mostPopularAnimal(cell);
@@ -95,13 +90,17 @@ public class GameField {
                                     .append((Long) Math.round(cell.getPlants().getMass()));
                         }
                     }
-                    creaturesToPrint.add(stringBuilder.toString());
+                    strings[i][j] = stringBuilder.toString();
                 }
-                field.addRule();
-                field.addRow(creaturesToPrint);
             }
-            field.setTextAlignment(TextAlignment.LEFT);
-            return field.render(10);
+
+            Table table;
+            if (columns <= 10) {
+                table = Table.of(strings, Alignment.LEFT, 14);
+            } else {
+                table = Table.of(strings, Alignment.LEFT, 6);
+            }
+            return table.toString();
         }
 
         if (columns > 20) {

@@ -2,10 +2,10 @@ package builders;
 
 import creatures.Animal;
 import creatures.Plant;
-import entities.Territory;
+import entities.Terrain;
 import exceptions.IslandGameException;
-import gamefield.Cell;
-import gamefield.GameField;
+import game.Cell;
+import game.GameField;
 import utils.Dice;
 
 import java.lang.reflect.Type;
@@ -14,15 +14,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public class CellBuilder implements Callable<Cell> {
     private final GameField gameField;
-    private final AnimalBuilder animalBuilder;
-    private Map<Type, Object> prototypes;
+    private final Map<Type, Object> prototypes;
 
     public CellBuilder(GameField gameField, AnimalBuilder animalBuilder) {
         this.gameField = gameField;
-        this.animalBuilder = animalBuilder;
         prototypes = animalBuilder.getPrototypes();
     }
 
@@ -41,7 +41,7 @@ public class CellBuilder implements Callable<Cell> {
         }
 
         Plant plants = generatePlants();
-        return new Cell(gameField, Territory.generateTerritory(), animals, plants);
+        return new Cell(gameField, Terrain.generateTerritory(), animals, plants);
     }
 
     private Plant generatePlants() {
@@ -52,12 +52,13 @@ public class CellBuilder implements Callable<Cell> {
         Set<Animal> result = new HashSet<>();
         Animal animal = (Animal) prototypes.get(animalClass);
         double probabilityOfAnimalSpawn = Dice.random(0, 1.0); //TODO extract constant
-        boolean isSpawned = probabilityOfAnimalSpawn > 0.5; //TODO extract constant
+        boolean isSpawned = probabilityOfAnimalSpawn > 0.25; //TODO extract constant
         if (isSpawned) {
             int animalAmount = Dice.random(0, animal.getAnimalLimits().getMaxPopulationInCell());
             for (int i = 0; i < animalAmount; i++) {
                 try {
-                    result.add(animal.clone());
+                    Animal clone = animal.clone();
+                    result.add(clone);
                 } catch (Exception e) {
                     throw new IslandGameException(e);
                 }

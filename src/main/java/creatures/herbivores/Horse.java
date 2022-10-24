@@ -1,11 +1,13 @@
 package creatures.herbivores;
 
-import annotations.AnimalScanner;
+import builders.AnimalScanner;
 import entities.AnimalLimits;
-import entities.BreedingParameters;
+import entities.BreedingParams;
+import entities.Terrain;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 @AnimalScanner
@@ -28,13 +30,13 @@ public class Horse extends Herbivore {
                 20);
         setWeight(ThreadLocalRandom.current().nextDouble(animalLimits.getMinWeight(), animalLimits.getMaxWeight()));
         setAnimalLimits(animalLimits);
-        BreedingParameters breedingParameters = new BreedingParameters(
-                determineGender(),
-                false,
-                0,
+        BreedingParams breedingParams = new BreedingParams(
                 50,
                 1,
                 2);
-        setBreedingParameters(breedingParameters);
+        setBreedingParams(breedingParams);
+
+        terrains.addAll(Arrays.asList(Terrain.values()));
+        getTerrains().remove(Terrain.MOUNTAINS);
     }
 }

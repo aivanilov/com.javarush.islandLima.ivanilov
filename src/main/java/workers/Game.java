@@ -1,11 +1,16 @@
 package workers;
 
-import builders.AnimalBuilder;
 import entities.GameInfo;
+import entities.Stats;
 import exceptions.IslandGameException;
-import gamefield.GameField;
+import game.GameField;
 import lombok.Getter;
 import lombok.Setter;
+import utils.Waiter;
+import workerManagers.*;
+
+import java.lang.reflect.Type;
+import java.util.*;
 import java.util.concurrent.*;
 
 @Getter
@@ -13,19 +18,17 @@ import java.util.concurrent.*;
 public class Game implements Runnable {
     private static final int availableProcessors = Runtime.getRuntime().availableProcessors();
 
-    private GameField gameField;
-    private boolean isStopped; //TODO stop criteria
+    private volatile GameField gameField;
+    private boolean isStopped;
+    private boolean isInitialized;
     private int rows;
     private int columns;
-    private final ExecutorService executorService;
-    private AnimalBuilder animalBuilder;
     private int iteration;
 
     public Game(int rows, int columns) {
         this.rows = rows;
         this.columns = columns;
         iteration = 0;
-        executorService = Executors.newFixedThreadPool(availableProcessors);
     }
 
     @Override
@@ -33,36 +36,69 @@ public class Game implements Runnable {
         this.initialize();
     }
 
-    public void initialize() {
+    private void initialize() {
         isStopped = false;
         gameField = new GameField(rows, columns);
+        DirectionsManager directionsManager = new DirectionsManager(this);
+        managePhase(directionsManager);
+        isInitialized = true;
     }
 
-    public GameInfo doIteration() { //TODO Implement stop criteria
-        try {
-            if (!isStopped) {
+    public GameInfo doIteration() {
+        if (isInitialized && !isStopped) {
+            try {
                 iteration++;
-                EatManager eatManager = new EatManager(this);
-                runAndJoin(eatManager);
-                //TODO reproduce manager and reproduce worker
-                //TODO MoveManager and MoveWorker
-                CalcManager calcManager = new CalcManager(this);
-                runAndJoin(calcManager);
-                return new GameInfo(calcManager.getStats(), gameField);
+                Manager eatManager = new EatManager(this);
+                managePhase(eatManager);
+                Manager moveManager = new MoveManager(this);
+                managePhase(moveManager);
+                Manager reproduceManager = new ReproduceManager(this);
+                managePhase(reproduceManager);
+                GameInfo gameInfo = formGameInfo(this);
+                isStopped = checkStopCriteria(gameInfo);
+                return gameInfo;
+            } catch (Exception e) {
+                throw new IslandGameException(e);
             }
+        }
+        throw new IslandGameException("The game hasn't been initialized yet.");
+    }
+
+    private boolean checkStopCriteria(GameInfo gameInfo) {
+        Map<Type, Long> numberOfCreatures = gameInfo.getStats().getNumberOfCreatures();
+        Set<Type> animalsLeft = new HashSet<>();
+
+        try {
+            numberOfCreatures
+                    .entrySet()
+                    .stream()
+                    .filter(e -> gameField.getAnimalBuilder().prototypes.containsKey(e.getKey()))
+                    .filter(e -> (e.getValue() > 0))
+                    .forEach(e -> animalsLeft.add(e.getKey()));
+
+            return animalsLeft.size() == 0;
         } catch (Exception e) {
             throw new IslandGameException(e);
         }
-        return null;
     }
 
-    private void runAndJoin(Runnable runnable) {
-        Thread thread = new Thread(runnable);
-        thread.start();
-        try{
-            thread.join();
-        } catch (InterruptedException e) {
+    private static GameInfo formGameInfo(Game game) {
+        CalcManager calcManager = new CalcManager(game);
+        ExecutorService calcExecutor = Executors.newFixedThreadPool(availableProcessors);
+        Future<Stats> stats = calcExecutor.submit((Callable<Stats>)calcManager);
+        Waiter.awaitTermination(calcExecutor);
+        GameInfo gameInfo;
+        try {
+            gameInfo = new GameInfo(stats.get(), game.getGameField());
+        } catch (InterruptedException | ExecutionException e) {
             throw new IslandGameException(e);
         }
+        return gameInfo;
+    }
+
+    private void managePhase(Manager manager) {
+        ExecutorService reproduceExecutor = Executors.newFixedThreadPool(availableProcessors);
+        reproduceExecutor.submit(manager);
+        Waiter.awaitTermination(reproduceExecutor);
     }
 }

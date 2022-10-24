@@ -2,7 +2,7 @@ package entities;
 
 import creatures.Creature;
 import creatures.Plant;
-import gamefield.GameField;
+import game.GameField;
 import lombok.Getter;
 import lombok.Setter;
 

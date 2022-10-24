@@ -1,8 +1,6 @@
 package builders;
 
-import annotations.AnimalScanner;
 import creatures.Animal;
-import creatures.carnivores.Carnivore;
 import exceptions.IslandGameException;
 import lombok.Getter;
 import org.reflections.Reflections;

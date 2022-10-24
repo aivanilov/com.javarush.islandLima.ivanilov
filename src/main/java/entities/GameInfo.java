@@ -1,6 +1,6 @@
 package entities;
 
-import gamefield.GameField;
+import game.GameField;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

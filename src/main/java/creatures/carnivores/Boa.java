@@ -1,13 +1,15 @@
 package creatures.carnivores;
 
-import annotations.AnimalScanner;
+import builders.AnimalScanner;
 import creatures.herbivores.*;
 import entities.AnimalLimits;
-import entities.BreedingParameters;
+import entities.BreedingParams;
+import entities.Terrain;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -23,7 +25,7 @@ public class Boa extends Carnivore {
         setName("Удав");
         setIcon("\uD83D\uDC0D");
         AnimalLimits animalLimits = new AnimalLimits(
-                1,
+                3,
                 12,
                 15,
                 30,
@@ -32,19 +34,19 @@ public class Boa extends Carnivore {
                 0.25);
         setWeight(ThreadLocalRandom.current().nextDouble(animalLimits.getMinWeight(), animalLimits.getMaxWeight()));
         setAnimalLimits(animalLimits);
-        BreedingParameters breedingParameters = new BreedingParameters(
-                determineGender(),
-                false,
-                0,
+        BreedingParams breedingParams = new BreedingParams(
                 17,
                 5,
                 50);
-        setBreedingParameters(breedingParameters);
+        setBreedingParams(breedingParams);
         Map<Type, Integer> foodPreferences = new HashMap<>();
         foodPreferences.put(Fox.class, 15);
         foodPreferences.put(Rabbit.class, 20);
         foodPreferences.put(Mouse.class, 40);
         foodPreferences.put(Duck.class, 10);
         setFoodPreferences(foodPreferences);
+
+        terrains.addAll(Arrays.asList(Terrain.values()));
+        getTerrains().remove(Terrain.MOUNTAINS);
     }
 }

@@ -1,16 +1,16 @@
 package creatures.carnivores;
 
-import actions.Nesting;
-import annotations.AnimalScanner;
-import creatures.Plant;
-import creatures.herbivores.Caterpillar;
+import behaviours.Nesting;
+import builders.AnimalScanner;
 import creatures.herbivores.Rabbit;
 import entities.AnimalLimits;
-import entities.BreedingParameters;
+import entities.BreedingParams;
+import entities.Terrain;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -18,7 +18,8 @@ import java.util.concurrent.ThreadLocalRandom;
 @AnimalScanner
 @Getter
 @Setter
-public class Eagle extends Carnivore implements Nesting {
+@Nesting
+public class Eagle extends Carnivore {
 
     public Eagle() {
         super();
@@ -26,28 +27,27 @@ public class Eagle extends Carnivore implements Nesting {
         setName("Орёл");
         setIcon("\uD83E\uDD85");
         AnimalLimits animalLimits = new AnimalLimits(
-                6,
+                4,
                 5,
                 6,
                 20,
                 3,
                 1,
-                0.5);
+                0.25);
         setWeight(ThreadLocalRandom.current().nextDouble(animalLimits.getMinWeight(), animalLimits.getMaxWeight()));
         setAnimalLimits(animalLimits);
-        BreedingParameters breedingParameters = new BreedingParameters(
-                determineGender(),
-                false,
-                0,
+        BreedingParams breedingParams = new BreedingParams(
                 11,
                 1,
                 3);
-        setBreedingParameters(breedingParameters);
+        setBreedingParams(breedingParams);
         Map<Type, Integer> foodPreferences = new HashMap<>();
         foodPreferences.put(Fox.class, 10);
         foodPreferences.put(Rabbit.class, 90);
         foodPreferences.put(Mouse.class, 90);
         foodPreferences.put(Duck.class, 80);
         setFoodPreferences(foodPreferences);
+
+        terrains.addAll(Arrays.asList(Terrain.values()));
     }
 }

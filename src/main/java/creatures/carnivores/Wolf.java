@@ -1,22 +1,22 @@
 package creatures.carnivores;
 
-import annotations.AnimalScanner;
+import behaviours.EatingCarrion;
+import builders.AnimalScanner;
 import creatures.herbivores.*;
 import entities.AnimalLimits;
-import entities.BreedingParameters;
+import entities.BreedingParams;
+import entities.Terrain;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 @AnimalScanner
 @Getter
 @Setter
+@EatingCarrion
 public class Wolf extends Carnivore {
 
     public Wolf() {
@@ -25,23 +25,20 @@ public class Wolf extends Carnivore {
         setName("Волк");
         setIcon("\uD83D\uDC3A");
         AnimalLimits animalLimits = new AnimalLimits(
-                3,
+                5,
                 42,
                 50,
                 30,
                 3,
                 8,
-                4);
+                1.5);
         setWeight(ThreadLocalRandom.current().nextDouble(animalLimits.getMinWeight(), animalLimits.getMaxWeight()));
         setAnimalLimits(animalLimits);
-        BreedingParameters breedingParameters = new BreedingParameters(
-                determineGender(),
-                false,
-                0,
+        BreedingParams breedingParams = new BreedingParams(
                 10,
-                2,
-                6);
-        setBreedingParameters(breedingParameters);
+                4,
+                8);
+        setBreedingParams(breedingParams);
         Map<Type, Integer> foodPreferences = new HashMap<>();
         foodPreferences.put(Horse.class, 10);
         foodPreferences.put(Deer.class, 15);
@@ -53,5 +50,7 @@ public class Wolf extends Carnivore {
         foodPreferences.put(Buffalo.class, 10);
         foodPreferences.put(Duck.class, 40);
         setFoodPreferences(foodPreferences);
+
+        terrains.addAll(Arrays.asList(Terrain.values()));
     }
 }

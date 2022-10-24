@@ -27,11 +27,6 @@
             <version>0.10.2</version>
         </dependency>
         <dependency>
-            <groupId>de.vandermeer</groupId>
-            <artifactId>asciitable</artifactId>
-            <version>0.3.2</version>
-        </dependency>
-        <dependency>
             <groupId>io.bretty</groupId>
             <artifactId>console-table-builder</artifactId>
             <version>1.2</version>
