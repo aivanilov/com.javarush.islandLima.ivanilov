@@ -9,7 +9,7 @@ Author: Sasha Ivanilov
 
 **Settings**
 - Main settings are extracted to "GameSettings" in main folder of the project.
-  - ROWS and COLUMNS (default 10, 10): a size of the game field.
+  - ROWS and COLUMNS (default 100, 20): a size of the game field. Game field view in console provides more details with 10 or less columns.
   - ITERATION_SPEED_IN_MILLIS (default 500): amount of milliseconds between prints of summary in console. It doesn't affect game results.
   - MIN_CHANCE_OF_SPAWN (default 0.25): minimal Dice.random() result for an animal to be born in the cell.
   - MAX_PLANT_MASS_IN_CELL (default 75000): max plant mass in kilos in the cell. 

@@ -23,8 +23,8 @@ public class Settings {
     public final double CARRION_DECREASE_AT_THE_END_OF_ITERATION_MULTIPLIER;
 
     public Settings() {
-        ROWS = 10;
-        COLUMNS = 10;
+        ROWS = 100;
+        COLUMNS = 20;
         ITERATION_SPEED_IN_MILLIS = 500;
         MIN_CHANCE_OF_SPAWN = 0.25;
         MAX_PLANT_MASS_IN_CELL = 75000;
